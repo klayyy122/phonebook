@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Телефонная книга</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .main-content {
+            padding: 30px;
+        }
+        
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .flash-success {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #c3e6cb;
+            margin-bottom: 10px;
+        }
+        
+        .flash-error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #f5c6cb;
+            margin-bottom: 10px;
+        }
+        
+        .search-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .search-form {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+        }
+        
+        .btn-warning {
+            background: #ecc94b;
+            color: #744210;
+        }
+        
+        .btn-warning:hover {
+            background: #d69e2e;
+            transform: translateY(-2px);
+        }
+        
+        .add-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .contacts-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .contacts-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .contacts-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .contacts-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 30px;
+            max-width: 500px;
+            border-radius: 10px;
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 10px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .close:hover {
+            color: #333;
+        }
+        
+        .admin-link {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            z-index: 100;
+        }
+        
+        .admin-link:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <a href="/pgadmin" class="admin-link" target="_blank">📊 PGAdmin</a>
+    
+    <div class="container">
+        <div class="header">
+            <h1>📞 Телефонная книга</h1>
+            <p>Управление контактами</p>
+        </div>
+        
+        <div class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            <div class="search-section">
+                <form class="search-form" action="{{ url_for('search_contacts') }}" method="GET">
+                    <input type="text" class="search-input" name="q" placeholder="Поиск..." value="{{ search_query if search_query else '' }}">
+                    <button type="submit" class="btn btn-primary">🔍 Поиск</button>
+                    {% if search_query %}
+                        <a href="{{ url_for('index') }}" class="btn btn-warning">✕ Сбросить</a>
+                    {% endif %}
+                </form>
+            </div>
+            
+            <div class="add-form">
+                <h3>➕ Добавить контакт</h3>
+                <form action="{{ url_for('add_contact') }}" method="POST">
+                    <div class="form-group">
+                        <label>Фамилия *</label>
+                        <input type="text" class="form-control" name="last_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Имя *</label>
+                        <input type="text" class="form-control" name="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Отчество</label>
+                        <input type="text" class="form-control" name="middle_name">
+                    </div>
+                    <div class="form-group">
+                        <label>Телефон *</label>
+                        <input type="text" class="form-control" name="phone_number" placeholder="+7(999)123-45-67" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Заметка</label>
+                        <textarea class="form-control" name="note" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">💾 Сохранить</button>
+                </form>
+            </div>
+            
+            <h3>📋 Список контактов</h3>
+            
+            {% if contacts %}
+                <table class="contacts-table">
+                    <thead>
+                        <tr>
+                            <th>ФИО</th>
+                            <th>Телефон</th>
+                            <th>Заметка</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for contact in contacts %}
+                            <tr>
+                                <td>{{ contact.last_name }} {{ contact.first_name }} {% if contact.middle_name %}{{ contact.middle_name }}{% endif %}</td>
+                                <td>{{ contact.phone_number }}</td>
+                                <td>{{ contact.note or '-' }}</td>
+                                <td>
+                                    <button class="btn btn-warning" onclick="editContact({{ contact.id }})">✏️ Ред.</button>
+                                    <a href="{{ url_for('delete_contact', id=contact.id) }}" class="btn btn-danger" onclick="return confirm('Удалить?')">🗑️ Уд.</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p style="text-align: center; padding: 30px; color: #666;">Контакты не найдены</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>✏️ Редактирование</h2>
+            <form id="editForm" method="POST">
+                <input type="hidden" id="edit_id">
+                
+                <div class="form-group">
+                    <label>Фамилия *</label>
+                    <input type="text" class="form-control" id="edit_last_name" name="last_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Имя *</label>
+                    <input type="text" class="form-control" id="edit_first_name" name="first_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Отчество</label>
+                    <input type="text" class="form-control" id="edit_middle_name" name="middle_name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Телефон *</label>
+                    <input type="text" class="form-control" id="edit_phone_number" name="phone_number" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Заметка</label>
+                    <textarea class="form-control" id="edit_note" name="note" rows="3"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">💾 Обновить</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal()">✕ Отмена</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function editContact(id) {
+            fetch(`/get_contact/${id}`)
+                .then(response => response.json())
+                .then(contact => {
+                    document.getElementById('edit_id').value = contact.id;
+                    document.getElementById('edit_last_name').value = contact.last_name;
+                    document.getElementById('edit_first_name').value = contact.first_name;
+                    document.getElementById('edit_middle_name').value = contact.middle_name || '';
+                    document.getElementById('edit_phone_number').value = contact.phone_number;
+                    document.getElementById('edit_note').value = contact.note || '';
+                    
+                    document.getElementById('editForm').action = `/update/${contact.id}`;
+                    document.getElementById('editModal').style.display = 'block';
+                });
+        }
+        
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: phonebook_db
+    environment:
+      POSTGRES_DB: ${PG_DB}
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASS}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - phonebook_network
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4:7
+    container_name: phonebook_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASS}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./pgadmin/servers.json:/pgadmin4/servers.json
+    networks:
+      - phonebook_network
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  webapp:
+    build: ./app
+    container_name: phonebook_web
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ${PG_DB}
+      DB_USER: ${PG_USER}
+      DB_PASSWORD: ${PG_PASS}
+    volumes:
+      - ./app:/app
+    networks:
+      - phonebook_network
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  nginx:
+    build: ./nginx
+    container_name: phonebook_nginx
+    ports:
+      - "80:80"
+    networks:
+      - phonebook_network
+    depends_on:
+      - webapp
+      - pgadmin
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+networks:
+  phonebook_network:
+    driver: bridge
