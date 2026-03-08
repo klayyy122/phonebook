@@ -34,5 +34,5 @@ docker-compose logs -f
 ```
 
 ## Where is check?
--Phonebook http://localhost
--PGAdmin http://localhost/pgadmin login and password from .env
+- Phonebook http://localhost
+- PGAdmin http://localhost/pgadmin login and password from .env
