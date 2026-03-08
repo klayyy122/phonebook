@@ -1,5 +1,5 @@
-#Phonebook
-##Installation
+# Phonebook
+## Installation
 ```bash
 
 sudo pacman -Syu
@@ -13,7 +13,7 @@ sudo usermod -aG docker $USER
 git clone https://github.com/klayyy122/phonebook.git
 cd phonebook
 ```
-##Create a .env file
+## Create a .env file
 ```
 nano .env
 
@@ -24,7 +24,7 @@ PG_PASS=password
 GADMIN_EMAIL=admin@gmail.com
 PGADMIN_PASS=admin
 ```
-##Start
+## Start
 ```bash
 #start all containers
 docker-compose up -d
@@ -33,6 +33,6 @@ docker-compose up -d
 docker-compose logs -f
 ```
 
-##Where is check?
+## Where is check?
 -Phonebook http://localhost
 -PGAdmin http://localhost/pgadmin login and password from .env
