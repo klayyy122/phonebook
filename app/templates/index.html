@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Телефонная книга</title>
+    <title>Phonebook</title>
     <style>
         * {
             margin: 0;
@@ -51,7 +51,7 @@
             background: #d4edda;
             color: #155724;
             padding: 12px;
-            border-radius: 5px;
+            border-radius: 100px;
             border: 1px solid #c3e6cb;
             margin-bottom: 10px;
         }
@@ -60,7 +60,7 @@
             background: #f8d7da;
             color: #721c24;
             padding: 12px;
-            border-radius: 5px;
+            border-radius: 100px;
             border: 1px solid #f5c6cb;
             margin-bottom: 10px;
         }
@@ -68,7 +68,7 @@
         .search-section {
             background: #f8f9fa;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 100px;
             margin-bottom: 30px;
         }
         
@@ -81,14 +81,14 @@
             flex: 1;
             padding: 12px;
             border: 2px solid #e0e0e0;
-            border-radius: 5px;
+            border-radius: 100px;
             font-size: 16px;
         }
         
         .btn {
             padding: 12px 24px;
             border: none;
-            border-radius: 5px;
+            border-radius: 100px;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s;
@@ -137,8 +137,9 @@
         .add-form {
             background: #f8f9fa;
             padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
+            border-radius: 100px;
+            margin-bottom: 50px;
+            padding-left: 59px;
         }
         
         .form-group {
@@ -156,7 +157,7 @@
             width: 100%;
             padding: 10px;
             border: 2px solid #e0e0e0;
-            border-radius: 5px;
+            border-radius: 100px;
             font-size: 14px;
         }
         
@@ -208,7 +209,7 @@
             margin: 50px auto;
             padding: 30px;
             max-width: 500px;
-            border-radius: 10px;
+            border-radius: 100px;
             position: relative;
         }
         
@@ -232,7 +233,7 @@
             background: #667eea;
             color: white;
             padding: 12px 24px;
-            border-radius: 50px;
+            border-radius: 100px;
             text-decoration: none;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
             z-index: 100;
@@ -249,8 +250,8 @@
     
     <div class="container">
         <div class="header">
-            <h1>📞 Телефонная книга</h1>
-            <p>Управление контактами</p>
+            <h1>Phonebook</h1>
+            <p>Edit contacs</p>
         </div>
         
         <div class="main-content">
@@ -266,51 +267,51 @@
             
             <div class="search-section">
                 <form class="search-form" action="{{ url_for('search_contacts') }}" method="GET">
-                    <input type="text" class="search-input" name="q" placeholder="Поиск..." value="{{ search_query if search_query else '' }}">
-                    <button type="submit" class="btn btn-primary">🔍 Поиск</button>
+                    <input type="text" class="search-input" name="q" placeholder="Search..." value="{{ search_query if search_query else '' }}">
+                    <button type="submit" class="btn btn-primary">🔍 Search</button>
                     {% if search_query %}
-                        <a href="{{ url_for('index') }}" class="btn btn-warning">✕ Сбросить</a>
+                        <a href="{{ url_for('index') }}" class="btn btn-warning">✕ Reset</a>
                     {% endif %}
                 </form>
             </div>
             
             <div class="add-form">
-                <h3>➕ Добавить контакт</h3>
+                <h3>➕ Add contact</h3>
                 <form action="{{ url_for('add_contact') }}" method="POST">
                     <div class="form-group">
-                        <label>Фамилия *</label>
+                        <label>Last name</label>
                         <input type="text" class="form-control" name="last_name" required>
                     </div>
                     <div class="form-group">
-                        <label>Имя *</label>
+                        <label>Name *</label>
                         <input type="text" class="form-control" name="first_name" required>
                     </div>
                     <div class="form-group">
-                        <label>Отчество</label>
+                        <label>Patronymic</label>
                         <input type="text" class="form-control" name="middle_name">
                     </div>
                     <div class="form-group">
-                        <label>Телефон *</label>
+                        <label>Number *</label>
                         <input type="text" class="form-control" name="phone_number" placeholder="+7(999)123-45-67" required>
                     </div>
                     <div class="form-group">
-                        <label>Заметка</label>
+                        <label>Note</label>
                         <textarea class="form-control" name="note" rows="3"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-success">💾 Сохранить</button>
+                    <button type="submit" class="btn btn-success">💾 Save</button>
                 </form>
             </div>
             
-            <h3>📋 Список контактов</h3>
+            <h3>📋 Contact list</h3>
             
             {% if contacts %}
                 <table class="contacts-table">
                     <thead>
                         <tr>
-                            <th>ФИО</th>
-                            <th>Телефон</th>
-                            <th>Заметка</th>
-                            <th>Действия</th>
+                            <th>LFP</th>
+                            <th>Number</th>
+                            <th>Note</th>
+                            <th>Instruments</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -320,15 +321,15 @@
                                 <td>{{ contact.phone_number }}</td>
                                 <td>{{ contact.note or '-' }}</td>
                                 <td>
-                                    <button class="btn btn-warning" onclick="editContact({{ contact.id }})">✏️ Ред.</button>
-                                    <a href="{{ url_for('delete_contact', id=contact.id) }}" class="btn btn-danger" onclick="return confirm('Удалить?')">🗑️ Уд.</a>
+                                    <button class="btn btn-warning" onclick="editContact({{ contact.id }})">✏️ edit</button>
+                                    <a href="{{ url_for('delete_contact', id=contact.id) }}" class="btn btn-danger" onclick="return confirm('Delete?')">🗑️ Del.</a>
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             {% else %}
-                <p style="text-align: center; padding: 30px; color: #666;">Контакты не найдены</p>
+                <p style="text-align: center; padding: 30px; color: #666;">Contacts not found</p>
             {% endif %}
         </div>
     </div>
@@ -336,37 +337,37 @@
     <div id="editModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
-            <h2>✏️ Редактирование</h2>
+            <h2>✏️ Edit</h2>
             <form id="editForm" method="POST">
                 <input type="hidden" id="edit_id">
                 
                 <div class="form-group">
-                    <label>Фамилия *</label>
+                    <label>Last name *</label>
                     <input type="text" class="form-control" id="edit_last_name" name="last_name" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>Имя *</label>
+                    <label>First name *</label>
                     <input type="text" class="form-control" id="edit_first_name" name="first_name" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>Отчество</label>
+                    <label>Patronymic</label>
                     <input type="text" class="form-control" id="edit_middle_name" name="middle_name">
                 </div>
                 
                 <div class="form-group">
-                    <label>Телефон *</label>
+                    <label>Number *</label>
                     <input type="text" class="form-control" id="edit_phone_number" name="phone_number" required>
                 </div>
                 
                 <div class="form-group">
-                    <label>Заметка</label>
+                    <label>Note</label>
                     <textarea class="form-control" id="edit_note" name="note" rows="3"></textarea>
                 </div>
                 
-                <button type="submit" class="btn btn-success">💾 Обновить</button>
-                <button type="button" class="btn btn-danger" onclick="closeModal()">✕ Отмена</button>
+                <button type="submit" class="btn btn-success">💾 Update</button>
+                <button type="button" class="btn btn-danger" onclick="closeModal()">✕ Cancel</button>
             </form>
         </div>
     </div>

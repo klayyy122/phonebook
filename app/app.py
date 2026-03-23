@@ -3,6 +3,7 @@ import psycopg2
 import psycopg2.extras
 import os
 from dotenv import load_dotenv
+import re
 
 
 load_dotenv()
@@ -17,7 +18,6 @@ DB_USER = os.getenv('DB_USER', 'phonebook_user')
 DB_PASSWORD = os.getenv('DB_PASSWORD', 'password')
 
 def get_db_connection():
-   
     conn = psycopg2.connect(
         host=DB_HOST,
         port=DB_PORT,
@@ -27,12 +27,11 @@ def get_db_connection():
         cursor_factory=psycopg2.extras.DictCursor
     )
     return conn
-def init_db():
 
+def init_db():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        
         
         cur.execute('''
             CREATE TABLE IF NOT EXISTS contacts (
@@ -41,7 +40,7 @@ def init_db():
                 first_name VARCHAR(100) NOT NULL,
                 middle_name VARCHAR(100),
                 phone_number VARCHAR(20) NOT NULL UNIQUE,
-                note TEXT,
+                note TEXT
                 
             )
         ''')
@@ -50,7 +49,6 @@ def init_db():
         cur.execute('CREATE INDEX IF NOT EXISTS idx_contacts_last_name ON contacts(last_name)')
         cur.execute('CREATE INDEX IF NOT EXISTS idx_contacts_phone_number ON contacts(phone_number)')
         
-       
         cur.execute('SELECT COUNT(*) FROM contacts')
         count = cur.fetchone()[0]
         
@@ -65,10 +63,10 @@ def init_db():
         conn.commit()
         cur.close()
         conn.close()
-        print("Таблица contacts создана/проверена")
+        print("Table contacts was created")
+    
     except Exception as e:
-        print(f"Ошибка при создании таблицы: {e}")
-
+        print(f"Error to create table: {e}")
 
 @app.route('/')
 def index():
@@ -80,7 +78,6 @@ def index():
     conn.close()
     return render_template('index.html', contacts=contacts)
 
-
 @app.route('/add', methods=['POST'])
 def add_contact():
     last_name = request.form['last_name']
@@ -88,6 +85,13 @@ def add_contact():
     middle_name = request.form.get('middle_name', '')
     phone_number = request.form['phone_number']
     note = request.form.get('note', '')
+    
+    phone_pattern = r'^(\+7|8)[\- \(]?\d{3}\)?[\- ]?\d{3}[\- ]?\d{2}[\- ]?\d{2}$'
+    
+    if not re.match(phone_pattern, phone_number):
+        flash('Error: wrong format of number! Try +7(999)123-45-67 or 89991234567', 'error')
+        return redirect(url_for('index'))
+
     
     try:
         conn = get_db_connection()
@@ -99,11 +103,11 @@ def add_contact():
         conn.commit()
         cur.close()
         conn.close()
-        flash('Контакт успешно добавлен!', 'success')
+        flash('Saving contact success!', 'success')
     except psycopg2.IntegrityError:
-        flash('Ошибка: контакт с таким телефоном уже существует!', 'error')
+        flash('Error: exist!', 'error')
     except Exception as e:
-        flash(f'Ошибка при добавлении: {str(e)}', 'error')
+        flash(f'Error: {str(e)}', 'error')
     
     return redirect(url_for('index'))
 
@@ -119,8 +123,7 @@ def get_contact(id):
     
     if contact:
         return jsonify(dict(contact))
-    return jsonify({'error': 'Контакт не найден'}), 404
-
+    return jsonify({'error': 'Contact not found'})
 
 @app.route('/update/<int:id>', methods=['POST'])
 def update_contact(id):
@@ -142,9 +145,9 @@ def update_contact(id):
         conn.commit()
         cur.close()
         conn.close()
-        flash('Контакт успешно обновлен!', 'success')
+        flash('Success!', 'success')
     except Exception as e:
-        flash(f'Ошибка при обновлении: {str(e)}', 'error')
+        flash(f'Error: {str(e)}', 'error')
     
     return redirect(url_for('index'))
 
@@ -158,9 +161,9 @@ def delete_contact(id):
         conn.commit()
         cur.close()
         conn.close()
-        flash('Контакт успешно удален!', 'success')
+        flash('Success!', 'success')
     except Exception as e:
-        flash(f'Ошибка при удалении: {str(e)}', 'error')
+        flash(f'Error {str(e)}', 'error')
     
     return redirect(url_for('index'))
 
